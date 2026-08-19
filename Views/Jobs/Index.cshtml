@@ -1,0 +1,79 @@
+﻿@model List<AIJobTracker.Models.Job>
+
+<h1>My Job Applications</h1>
+<form asp-controller="Jobs" asp-action="Index" method="get">
+
+    <input type="text"
+           name="search"
+           placeholder="Search jobs..." />
+
+    <select name="status">
+        <option value="">All Statuses</option>
+        <option value="Saved">Saved</option>
+        <option value="Applied">Applied</option>
+        <option value="Interview">Interview</option>
+        <option value="Rejected">Rejected</option>
+        <option value="Offer">Offer</option>
+        <option value="Withdrawn">Withdrawn</option>
+    </select>
+
+    <button type="submit">Search</button>
+
+</form>
+
+<br />
+
+<a asp-controller="Jobs" asp-action="Create">
+    Add New Job
+</a>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info mt-4">
+        <h4>No job applications found.</h4>
+        <p>Start tracking your applications by adding your first job.</p>
+
+        <a asp-action="Create" class="btn btn-primary">
+            Add Your First Job
+        </a>
+    </div>
+}
+else
+{
+    @foreach (var job in Model)
+    {
+        <div>
+            <h2>@job.Title</h2>
+
+            <p>Company: @job.Company</p>
+            <p>Location: @job.Location</p>
+            <p>Status: @job.Status</p>
+            <p>Applied: @job.AppliedDate.ToShortDateString()</p>
+
+            <a asp-action="Details"
+            asp-route-id="@job.Id"
+            class="btn btn-info">
+                Details
+            </a>
+
+            | 
+
+            <a asp-controller="Jobs"
+            asp-action="Edit"
+            asp-route-id="@job.Id">
+                Edit
+            </a>
+
+            |
+
+            <a asp-controller="Jobs"
+            asp-action="Delete"
+            asp-route-id="@job.Id">
+                Delete
+            </a>
+
+        </div>
+
+        <hr />
+    }
+}

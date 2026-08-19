@@ -1,0 +1,70 @@
+﻿@model AIJobTracker.Models.DashboardViewModel
+
+<div class="container mt-4">
+
+    <div class="mb-4">
+        <h1>Job Application Dashboard</h1>
+        <p class="text-muted">
+            Track and manage your job applications in one place.
+        </p>
+    </div>
+
+    <div class="row g-4">
+
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Total Jobs</h5>
+                    <h2>@Model.TotalJobs</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Saved</h5>
+                    <h2>@Model.SavedJobs</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Applied</h5>
+                    <h2>@Model.AppliedJobs</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Interview</h5>
+                    <h2>@Model.InterviewJobs</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Rejected</h5>
+                    <h2>@Model.RejectedJobs</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Offers</h5>
+                    <h2>@Model.OfferJobs</h2>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>

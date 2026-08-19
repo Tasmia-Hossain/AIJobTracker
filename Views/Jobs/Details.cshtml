@@ -1,0 +1,52 @@
+﻿@model AIJobTracker.Models.Job
+
+<div class="container mt-4">
+
+    <h1>Job Details</h1>
+
+    <div class="card shadow-sm mt-4">
+        <div class="card-body">
+
+            <h2 class="card-title">@Model.Title</h2>
+
+            <hr />
+
+            <p>
+                <strong>Company:</strong>
+                @Model.Company
+            </p>
+
+            <p>
+                <strong>Location:</strong>
+                @Model.Location
+            </p>
+
+            <p>
+                <strong>Status:</strong>
+                @Model.Status
+            </p>
+
+            <p>
+                <strong>Applied Date:</strong>
+                @Model.AppliedDate.ToShortDateString()
+            </p>
+
+            <div class="mt-4">
+
+                <a asp-action="Edit"
+                   asp-route-id="@Model.Id"
+                   class="btn btn-primary">
+                    Edit
+                </a>
+
+                <a asp-action="Index"
+                   class="btn btn-secondary">
+                    Back to Jobs
+                </a>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>

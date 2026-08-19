@@ -1,0 +1,55 @@
+﻿@model AIJobTracker.Models.Job
+
+<h1>Edit Job</h1>
+
+<form asp-controller="Jobs" asp-action="Edit" method="post">
+
+    <input type="hidden" asp-for="Id" />
+
+    <div>
+        <label asp-for="Title"></label>
+        <input asp-for="Title" />
+    </div>
+
+    <br />
+
+    <div>
+        <label asp-for="Company"></label>
+        <input asp-for="Company" />
+    </div>
+
+    <br />
+
+    <div>
+        <label asp-for="Location"></label>
+        <input asp-for="Location" />
+    </div>
+
+    <br />
+
+    <div>
+        <label asp-for="Status"></label>
+
+        <select asp-for="Status">
+            <option value="">Select Status</option>
+            <option value="Saved">Saved</option>
+            <option value="Applied">Applied</option>
+            <option value="Interview">Interview</option>
+            <option value="Rejected">Rejected</option>
+            <option value="Offer">Offer</option>
+            <option value="Withdrawn">Withdrawn</option>
+        </select>
+    </div>
+
+    <br />
+
+    <div>
+        <label asp-for="AppliedDate"></label>
+        <input asp-for="AppliedDate" type="date" />
+    </div>
+
+    <br />
+
+    <button type="submit">Save Changes</button>
+
+</form>
