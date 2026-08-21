@@ -44,6 +44,7 @@ AIJobTracker/
 ├── Program.cs
 ├── appsettings.json
 └── AIJobTracker.csproj
+```
 
 ## Application Workflow
 
