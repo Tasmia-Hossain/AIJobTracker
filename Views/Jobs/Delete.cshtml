@@ -1,46 +1,118 @@
 ﻿@model AIJobTracker.Models.Job
 
+@{
+    ViewData["Title"] = "Delete Job";
+}
+
 <div class="container mt-4">
 
-    <h1>Delete Job</h1>
-
-    <div class="alert alert-warning mt-4">
-        <strong>Are you sure you want to delete this job?</strong>
+    <div class="mb-4">
+        <h1 class="fw-bold">Delete Job</h1>
+        <p class="text-muted">
+            Review the job information before deleting it.
+        </p>
     </div>
 
-    <div class="card">
-        <div class="card-body">
+    <div class="card shadow-sm border-0">
 
-            <h3>@Model.Title</h3>
+        <div class="card-body p-4">
 
-            <p>
-                <strong>Company:</strong> @Model.Company
-            </p>
+            <div class="alert alert-warning">
 
-            <p>
-                <strong>Location:</strong> @Model.Location
-            </p>
+                <h5 class="alert-heading fw-bold">
+                    Are you sure you want to delete this job?
+                </h5>
 
-            <p>
-                <strong>Status:</strong> @Model.Status
-            </p>
+                <p class="mb-0">
+                    This action cannot be undone.
+                </p>
 
-            <form asp-action="Delete" method="post">
+            </div>
 
-                <input type="hidden" asp-for="Id" />
+            <div class="mt-4">
 
-                <button type="submit" class="btn btn-danger">
+                <h3 class="fw-bold">
+                    @Model.Title
+                </h3>
+
+                <hr />
+
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+
+                        <h6 class="text-muted">
+                            Company
+                        </h6>
+
+                        <p class="fw-semibold">
+                            @Model.Company
+                        </p>
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <h6 class="text-muted">
+                            Location
+                        </h6>
+
+                        <p class="fw-semibold">
+                            @Model.Location
+                        </p>
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <h6 class="text-muted">
+                            Application Status
+                        </h6>
+
+                        <p class="fw-semibold">
+                            @Model.Status
+                        </p>
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <h6 class="text-muted">
+                            Applied Date
+                        </h6>
+
+                        <p class="fw-semibold">
+                            @Model.AppliedDate.ToShortDateString()
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <hr />
+
+            <form asp-action="Delete"
+                  method="post">
+
+                <input type="hidden"
+                       asp-for="Id" />
+
+                <button type="submit"
+                        class="btn btn-danger me-2">
                     Yes, Delete
                 </button>
 
                 <a asp-action="Index"
-                   class="btn btn-secondary">
+                   class="btn btn-outline-secondary">
                     Cancel
                 </a>
 
             </form>
 
         </div>
+
     </div>
 
 </div>

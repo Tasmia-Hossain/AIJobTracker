@@ -1,8 +1,89 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "AIJobTracker";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="text-center py-5">
+
+    <h1 class="display-4 fw-bold">
+        AIJobTracker
+    </h1>
+
+    <p class="lead mt-3">
+        Track, organize, and manage your job applications in one place.
+    </p>
+
+    <p class="text-muted">
+        Keep track of applications, interviews, offers, and your overall job search progress.
+    </p>
+
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        <div class="mt-4">
+            <a asp-controller="Dashboard"
+               asp-action="Index"
+               class="btn btn-primary btn-lg me-2">
+                Go to Dashboard
+            </a>
+
+            <a asp-controller="Jobs"
+               asp-action="Index"
+               class="btn btn-outline-primary btn-lg">
+                View Jobs
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="mt-4">
+            <a asp-controller="Account"
+               asp-action="Register"
+               class="btn btn-primary btn-lg me-2">
+                Get Started
+            </a>
+
+            <a asp-controller="Account"
+               asp-action="Login"
+               class="btn btn-outline-primary btn-lg">
+                Login
+            </a>
+        </div>
+    }
+
+</div>
+
+<div class="row mt-5 g-4">
+
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body text-center">
+                <h4>📋 Track Applications</h4>
+                <p class="text-muted">
+                    Keep all your job applications organized in one place.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body text-center">
+                <h4>🔎 Search & Filter</h4>
+                <p class="text-muted">
+                    Quickly find applications using search and status filters.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body text-center">
+                <h4>📊 Monitor Progress</h4>
+                <p class="text-muted">
+                    View your application statistics from the dashboard.
+                </p>
+            </div>
+        </div>
+    </div>
+
 </div>

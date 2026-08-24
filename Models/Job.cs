@@ -18,5 +18,9 @@ namespace AIJobTracker.Models
         public string Status { get; set; } = "";
 
         public DateTime AppliedDate { get; set; }
+
+        public string? ApplicationUserId { get; set; }
+
+        public ApplicationUser? ApplicationUser { get; set; }
     }
 }

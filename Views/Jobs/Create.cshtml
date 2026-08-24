@@ -1,57 +1,186 @@
 ﻿@model AIJobTracker.Models.Job
 
-<h1>Add New Job</h1>
+@{
+    ViewData["Title"] = "Add New Job";
+}
 
-<form asp-controller="Jobs" asp-action="Create" method="post">
+<div class="container mt-4">
 
-    <div>
-        <label asp-for="Title"></label>
-        <input asp-for="Title" />
-        <span asp-validation-for="Title"></span>
+    <div class="mb-4">
+        <h1 class="fw-bold">Add New Job</h1>
+        <p class="text-muted">
+            Add a new job application to your tracker.
+        </p>
     </div>
 
-    <br />
+    <div class="card shadow-sm border-0">
 
-    <div>
-        <label asp-for="Company"></label>
-        <input asp-for="Company" />
-        <span asp-validation-for="Company"></span>
+        <div class="card-body p-4">
+
+            <form asp-controller="Jobs"
+                  asp-action="Create"
+                  method="post">
+
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger mb-3">
+                </div>
+
+                <!-- Job Title -->
+
+                <div class="mb-3">
+
+                    <label asp-for="Title"
+                           class="form-label fw-semibold">
+                        Job Title
+                    </label>
+
+                    <input asp-for="Title"
+                           class="form-control"
+                           placeholder="e.g. Junior Software Engineer" />
+
+                    <span asp-validation-for="Title"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+
+                <!-- Company -->
+
+                <div class="mb-3">
+
+                    <label asp-for="Company"
+                           class="form-label fw-semibold">
+                        Company
+                    </label>
+
+                    <input asp-for="Company"
+                           class="form-control"
+                           placeholder="e.g. ABC Technologies" />
+
+                    <span asp-validation-for="Company"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+
+                <!-- Location -->
+
+                <div class="mb-3">
+
+                    <label asp-for="Location"
+                           class="form-label fw-semibold">
+                        Location
+                    </label>
+
+                    <input asp-for="Location"
+                           class="form-control"
+                           placeholder="e.g. Dhaka, Bangladesh" />
+
+                    <span asp-validation-for="Location"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+
+                <!-- Status -->
+
+                <div class="mb-3">
+
+                    <label asp-for="Status"
+                           class="form-label fw-semibold">
+                        Application Status
+                    </label>
+
+                    <select asp-for="Status"
+                            class="form-select">
+
+                        <option value="">
+                            Select Status
+                        </option>
+
+                        <option value="Saved">
+                            Saved
+                        </option>
+
+                        <option value="Applied">
+                            Applied
+                        </option>
+
+                        <option value="Interview">
+                            Interview
+                        </option>
+
+                        <option value="Rejected">
+                            Rejected
+                        </option>
+
+                        <option value="Offer">
+                            Offer
+                        </option>
+
+                        <option value="Withdrawn">
+                            Withdrawn
+                        </option>
+
+                    </select>
+
+                    <span asp-validation-for="Status"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+
+                <!-- Applied Date -->
+
+                <div class="mb-4">
+
+                    <label asp-for="AppliedDate"
+                           class="form-label fw-semibold">
+                        Applied Date
+                    </label>
+
+                    <input asp-for="AppliedDate"
+                           type="date"
+                           class="form-control" />
+
+                    <span asp-validation-for="AppliedDate"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+
+                <!-- Buttons -->
+
+                <div class="d-flex gap-2">
+
+                    <button type="submit"
+                            class="btn btn-primary">
+                        Add Job
+                    </button>
+
+                    <a asp-controller="Jobs"
+                       asp-action="Index"
+                       class="btn btn-outline-secondary">
+                        Cancel
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
     </div>
 
-    <br />
+</div>
 
-    <div>
-        <label asp-for="Location"></label>
-        <input asp-for="Location" />
-    </div>
-
-    <br />
-
-    <div>
-        <label asp-for="Status"></label>
-
-        <select asp-for="Status">
-            <option value="">Select Status</option>
-            <option value="Saved">Saved</option>
-            <option value="Applied">Applied</option>
-            <option value="Interview">Interview</option>
-            <option value="Rejected">Rejected</option>
-            <option value="Offer">Offer</option>
-            <option value="Withdrawn">Withdrawn</option>
-        </select>
-
-        <span asp-validation-for="Status"></span>
-    </div>
-
-    <br />
-
-    <div>
-        <label asp-for="AppliedDate"></label>
-        <input asp-for="AppliedDate" type="date" />
-    </div>
-
-    <br />
-
-    <button type="submit">Add Job</button>
-
-</form>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

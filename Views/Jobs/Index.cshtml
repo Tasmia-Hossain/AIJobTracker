@@ -1,79 +1,201 @@
 ﻿@model List<AIJobTracker.Models.Job>
 
-<h1>My Job Applications</h1>
-<form asp-controller="Jobs" asp-action="Index" method="get">
+@{
+    ViewData["Title"] = "My Jobs";
+}
 
-    <input type="text"
-           name="search"
-           placeholder="Search jobs..." />
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="fw-bold">My Job Applications</h1>
+        <p class="text-muted mb-0">
+            Track and manage your job applications.
+        </p>
+    </div>
 
-    <select name="status">
-        <option value="">All Statuses</option>
-        <option value="Saved">Saved</option>
-        <option value="Applied">Applied</option>
-        <option value="Interview">Interview</option>
-        <option value="Rejected">Rejected</option>
-        <option value="Offer">Offer</option>
-        <option value="Withdrawn">Withdrawn</option>
-    </select>
+    <a asp-controller="Jobs"
+       asp-action="Create"
+       class="btn btn-primary">
+        + Add New Job
+    </a>
+</div>
 
-    <button type="submit">Search</button>
 
-</form>
+<!-- Search & Filter -->
 
-<br />
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
 
-<a asp-controller="Jobs" asp-action="Create">
-    Add New Job
-</a>
+        <form asp-controller="Jobs"
+              asp-action="Index"
+              method="get">
 
+            <div class="row g-3">
+
+                <div class="col-md-6">
+                    <input type="text"
+                           name="search"
+                           class="form-control"
+                           placeholder="Search by job title, company, or location..." />
+                </div>
+
+                <div class="col-md-4">
+                    <select name="status"
+                            class="form-select">
+
+                        <option value="">All Statuses</option>
+                        <option value="Saved">Saved</option>
+                        <option value="Applied">Applied</option>
+                        <option value="Interview">Interview</option>
+                        <option value="Rejected">Rejected</option>
+                        <option value="Offer">Offer</option>
+                        <option value="Withdrawn">Withdrawn</option>
+
+                    </select>
+                </div>
+
+                <div class="col-md-2">
+                    <button type="submit"
+                            class="btn btn-primary w-100">
+                        Search
+                    </button>
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+
+<!-- Job Applications -->
 @if (!Model.Any())
 {
     <div class="alert alert-info mt-4">
-        <h4>No job applications found.</h4>
-        <p>Start tracking your applications by adding your first job.</p>
 
-        <a asp-action="Create" class="btn btn-primary">
+        <h4 class="alert-heading">
+            No job applications found.
+        </h4>
+
+        <p>
+            Start tracking your applications by adding your first job.
+        </p>
+
+        <a asp-action="Create"
+           class="btn btn-primary">
             Add Your First Job
         </a>
+
     </div>
 }
 else
 {
-    @foreach (var job in Model)
-    {
-        <div>
-            <h2>@job.Title</h2>
+    <div class="row g-4">
 
-            <p>Company: @job.Company</p>
-            <p>Location: @job.Location</p>
-            <p>Status: @job.Status</p>
-            <p>Applied: @job.AppliedDate.ToShortDateString()</p>
+        @foreach (var job in Model)
+        {
+            <div class="col-md-6 col-lg-4">
 
-            <a asp-action="Details"
-            asp-route-id="@job.Id"
-            class="btn btn-info">
-                Details
-            </a>
+                <div class="card h-100 shadow-sm">
 
-            | 
+                    <div class="card-body">
 
-            <a asp-controller="Jobs"
-            asp-action="Edit"
-            asp-route-id="@job.Id">
-                Edit
-            </a>
+                        <!-- Title + Status -->
 
-            |
+                        <div class="d-flex justify-content-between align-items-start mb-3">
 
-            <a asp-controller="Jobs"
-            asp-action="Delete"
-            asp-route-id="@job.Id">
-                Delete
-            </a>
+                            <h5 class="card-title fw-bold mb-0">
+                                @job.Title
+                            </h5>
 
-        </div>
+                            @if (job.Status == "Applied")
+                            {
+                                <span class="badge bg-primary">
+                                    Applied
+                                </span>
+                            }
+                            else if (job.Status == "Interview")
+                            {
+                                <span class="badge bg-warning text-dark">
+                                    Interview
+                                </span>
+                            }
+                            else if (job.Status == "Offer")
+                            {
+                                <span class="badge bg-success">
+                                    Offer
+                                </span>
+                            }
+                            else if (job.Status == "Rejected")
+                            {
+                                <span class="badge bg-danger">
+                                    Rejected
+                                </span>
+                            }
+                            else if (job.Status == "Withdrawn")
+                            {
+                                <span class="badge bg-secondary">
+                                    Withdrawn
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-info text-dark">
+                                    Saved
+                                </span>
+                            }
 
-        <hr />
-    }
+                        </div>
+
+
+                        <!-- Job Information -->
+
+                        <p class="mb-2">
+                            <strong>Company:</strong>
+                            @job.Company
+                        </p>
+
+                        <p class="mb-2">
+                            <strong>Location:</strong>
+                            @job.Location
+                        </p>
+
+                        <p class="text-muted mb-3">
+                            <strong>Applied:</strong>
+                            @job.AppliedDate.ToShortDateString()
+                        </p>
+
+
+                        <!-- Actions -->
+
+                        <div class="d-flex gap-2">
+
+                            <a asp-action="Details"
+                               asp-route-id="@job.Id"
+                               class="btn btn-outline-primary btn-sm">
+                                Details
+                            </a>
+
+                            <a asp-action="Edit"
+                               asp-route-id="@job.Id"
+                               class="btn btn-outline-secondary btn-sm">
+                                Edit
+                            </a>
+
+                            <a asp-action="Delete"
+                               asp-route-id="@job.Id"
+                               class="btn btn-outline-danger btn-sm">
+                                Delete
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+        }
+
+    </div>
 }
