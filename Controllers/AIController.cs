@@ -40,7 +40,7 @@ namespace AIJobTracker.Controllers
 
                 ViewBag.AnalysisHtml = Markdown.ToHtml(result, pipeline);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 ViewBag.Error = "AI analysis failed. Please try again.";
             }

@@ -1,28 +1,31 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - AIJobTracker</title>
+    <script>try { document.documentElement.dataset.theme = localStorage.getItem('aijobtracker-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); } catch { }</script>
     <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/contrast-polish.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/design-system.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/AIJobTracker.styles.css" asp-append-version="true" />
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">AIJobTracker</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+    <header class="site-header">
+        <nav class="navbar navbar-expand-lg navbar-light site-nav">
+            <div class="container app-shell">
+                <a class="navbar-brand brand" asp-area="" asp-controller="Home" asp-action="Index"><span class="brand-mark" aria-hidden="true">↗</span><span>AIJobTracker</span></a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavigation" aria-controls="mainNavigation"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+                <div class="collapse navbar-collapse" id="mainNavigation">
+                    <ul class="navbar-nav nav-links me-auto">
 
                         <li class="nav-item">
-                            <a class="nav-link text-dark"
+                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" ? "active" : "")"
                                asp-controller="Home"
                                asp-action="Index">
                                 Home
@@ -32,7 +35,7 @@
                         @if (User.Identity?.IsAuthenticated == true)
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark"
+                                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Dashboard" ? "active" : "")"
                                    asp-controller="Dashboard"
                                    asp-action="Index">
                                     Dashboard
@@ -40,7 +43,7 @@
                             </li>
 
                             <li class="nav-item">
-                                <a class="nav-link text-dark"
+                                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Jobs" ? "active" : "")"
                                    asp-controller="Jobs"
                                    asp-action="Index">
                                     Jobs
@@ -48,15 +51,7 @@
                             </li>
 
                             <li class="nav-item">
-                                <a class="nav-link text-dark"
-                                   asp-controller="Jobs"
-                                   asp-action="Create">
-                                    Add Job
-                                </a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a class="nav-link text-dark"
+                                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "AI" ? "active" : "")"
                                    asp-controller="AI"
                                    asp-action="Analyze">
                                     AI Analyzer
@@ -66,62 +61,37 @@
 
                     </ul>
 
-                    <ul class="navbar-nav">
+                    <div class="nav-account">
+                        <button type="button" class="theme-toggle" data-theme-toggle aria-label="Switch to dark mode" title="Switch theme">
+                            <span class="theme-icon theme-icon-sun" aria-hidden="true">☀</span><span class="theme-icon theme-icon-moon" aria-hidden="true">☾</span>
+                        </button>
 
                         @if (User.Identity?.IsAuthenticated == true)
                         {
-                            <li class="nav-item">
-                                <span class="nav-link text-dark">
-                                    Hello, @User.Identity.Name
-                                </span>
-                            </li>
-
-                            <li class="nav-item">
-                                <form asp-controller="Account"
-                                      asp-action="Logout"
-                                      method="post">
-
-                                    <button type="submit"
-                                            class="nav-link btn btn-link text-dark">
-                                        Logout
-                                    </button>
-
-                                </form>
-                            </li>
+                            <a class="btn btn-primary btn-sm nav-primary-action" asp-controller="Jobs" asp-action="Create"><span aria-hidden="true">+</span> Add job</a>
+                            <span class="user-chip"><span class="user-avatar" aria-hidden="true">@User.Identity.Name?.Substring(0, 1).ToUpper()</span><span class="user-name">@User.Identity.Name</span></span>
+                            <form asp-controller="Account" asp-action="Logout" method="post"><button type="submit" class="btn btn-link logout-button">Log out</button></form>
                         }
                         else
                         {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark"
-                                   asp-controller="Account"
-                                   asp-action="Login">
-                                    Login
-                                </a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a class="nav-link text-dark"
-                                   asp-controller="Account"
-                                   asp-action="Register">
-                                    Register
-                                </a>
-                            </li>
+                            <a class="nav-link" asp-controller="Account" asp-action="Login">Login</a>
+                            <a class="btn btn-primary btn-sm nav-primary-action" asp-controller="Account" asp-action="Register">Register</a>
                         }
 
-                    </ul>
+                    </div>
                 </div>
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
+    <div class="container app-shell">
+        <main role="main" class="page-content">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - AIJobTracker - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <footer class="site-footer">
+        <div class="container app-shell">
+            <div><strong>AIJobTracker</strong><span class="footer-tagline">Your focused job-search workspace.</span></div><div class="footer-links"><a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a><span>&copy; 2026</span></div>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
