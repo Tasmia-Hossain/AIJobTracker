@@ -1,3 +1,124 @@
 @model AIJobTracker.Models.Job
-@{ ViewData["Title"] = "Delete Job"; }
-<div class="form-shell"><div class="page-header"><div><p class="page-eyebrow">Application tracker</p><h1 class="page-title">Delete job application</h1><p class="page-subtitle">Review the application below before permanently removing it.</p></div></div><section class="card detail-card"><div class="card-body"><div class="alert alert-warning mb-4"><strong>Delete this application?</strong><br />This action cannot be undone.</div><h2 class="form-section-title">@Model.Title</h2><p class="form-section-copy">@Model.Company</p></div><div class="detail-grid"><div class="detail-item"><span class="detail-label">Company</span><span class="detail-value">@Model.Company</span></div><div class="detail-item"><span class="detail-label">Location</span><span class="detail-value">@(string.IsNullOrWhiteSpace(Model.Location) ? "Not specified" : Model.Location)</span></div><div class="detail-item"><span class="detail-label">Application status</span><span class="detail-value">@Model.Status</span></div><div class="detail-item"><span class="detail-label">Applied date</span><span class="detail-value">@Model.AppliedDate.ToString("MMMM d, yyyy")</span></div></div><div class="detail-actions"><form asp-action="Delete" method="post"><input type="hidden" asp-for="Id" /><button type="submit" class="btn btn-danger">Yes, delete job</button></form><a asp-action="Index" class="btn btn-outline-secondary">Cancel</a></div></section></div>
+
+@{
+    ViewData["Title"] = "Delete Job";
+}
+
+<div class="form-shell">
+
+    <div class="page-header">
+        <div>
+            <p class="page-eyebrow">Application tracker</p>
+            <h1 class="page-title">Delete job application</h1>
+            <p class="page-subtitle">
+                Review the application below before permanently removing it.
+            </p>
+        </div>
+    </div>
+
+    <section class="card detail-card">
+
+        <div class="card-body">
+
+            <div class="alert alert-warning mb-4">
+                <strong>Delete this application?</strong>
+                <br />
+                This action cannot be undone.
+            </div>
+
+            <h2 class="form-section-title">
+                @Model.Title
+            </h2>
+
+            <p class="form-section-copy">
+                @Model.Company
+            </p>
+
+        </div>
+
+        <div class="detail-grid">
+
+            <div class="detail-item">
+                <span class="detail-label">Company</span>
+                <span class="detail-value">
+                    @Model.Company
+                </span>
+            </div>
+
+            <div class="detail-item">
+                <span class="detail-label">Location</span>
+                <span class="detail-value">
+                    @(string.IsNullOrWhiteSpace(Model.Location)
+                        ? "Not specified"
+                        : Model.Location)
+                </span>
+            </div>
+
+            <div class="detail-item">
+                <span class="detail-label">Application status</span>
+                <span class="detail-value">
+                    @Model.Status
+                </span>
+            </div>
+
+            <div class="detail-item">
+                <span class="detail-label">Applied date</span>
+                <span class="detail-value">
+                    @Model.AppliedDate.ToString("MMMM d, yyyy")
+                </span>
+            </div>
+
+            <div class="detail-item">
+                <span class="detail-label">Job type</span>
+                <span class="detail-value">
+                    @(string.IsNullOrWhiteSpace(Model.JobType)
+                        ? "Not specified"
+                        : Model.JobType)
+                </span>
+            </div>
+
+            <div class="detail-item">
+                <span class="detail-label">Work mode</span>
+                <span class="detail-value">
+                    @(string.IsNullOrWhiteSpace(Model.WorkMode)
+                        ? "Not specified"
+                        : Model.WorkMode)
+                </span>
+            </div>
+
+            <div class="detail-item">
+                <span class="detail-label">Deadline</span>
+                <span class="detail-value">
+                    @(Model.Deadline.HasValue
+                        ? Model.Deadline.Value.ToString("MMMM d, yyyy")
+                        : "Not specified")
+                </span>
+            </div>
+
+        </div>
+
+        <div class="detail-actions">
+
+            <form asp-action="Delete"
+                  method="post">
+
+                <input type="hidden"
+                       asp-for="Id" />
+
+                <button type="submit"
+                        class="btn btn-danger">
+                    Yes, delete job
+                </button>
+
+            </form>
+
+            <a asp-action="Index"
+               class="btn btn-outline-secondary">
+                Cancel
+            </a>
+
+        </div>
+
+    </section>
+
+</div>

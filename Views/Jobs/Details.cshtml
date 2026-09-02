@@ -1,3 +1,232 @@
 @model AIJobTracker.Models.Job
-@{ ViewData["Title"] = "Job Details"; }
-<div class="page-header"><div><p class="page-eyebrow">Application tracker</p><h1 class="page-title">Application details</h1><p class="page-subtitle">A complete view of this job opportunity.</p></div><a asp-action="Index" class="btn btn-outline-secondary">← Back to jobs</a></div><section class="card detail-card"><div class="detail-hero"><div><h2 class="page-title">@Model.Title</h2><p class="detail-company">@Model.Company</p></div><span class="status-badge status-@Model.Status.ToLower()">@Model.Status</span></div><div class="detail-grid"><div class="detail-item"><span class="detail-label">Company</span><span class="detail-value">@Model.Company</span></div><div class="detail-item"><span class="detail-label">Location</span><span class="detail-value">@(string.IsNullOrWhiteSpace(Model.Location) ? "Not specified" : Model.Location)</span></div><div class="detail-item"><span class="detail-label">Application status</span><span class="detail-value">@Model.Status</span></div><div class="detail-item"><span class="detail-label">Applied date</span><span class="detail-value">@Model.AppliedDate.ToString("MMMM d, yyyy")</span></div></div><div class="detail-actions"><a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit job</a><a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-outline-danger">Delete job</a><a asp-action="Index" class="btn btn-outline-secondary">Back to jobs</a></div></section>
+
+@{
+    ViewData["Title"] = "Job Details";
+}
+
+<div class="page-header">
+    <div>
+        <p class="page-eyebrow">Application tracker</p>
+        <h1 class="page-title">Application details</h1>
+        <p class="page-subtitle">
+            A complete view of this job opportunity.
+        </p>
+    </div>
+
+    <a asp-action="Index"
+       class="btn btn-outline-secondary">
+        ← Back to jobs
+    </a>
+</div>
+
+<section class="card detail-card">
+
+    <div class="detail-hero">
+        <div>
+            <h2 class="page-title">@Model.Title</h2>
+            <p class="detail-company">@Model.Company</p>
+        </div>
+
+        <span class="status-badge status-@Model.Status.ToLower()">
+            @Model.Status
+        </span>
+    </div>
+
+    <div class="detail-grid">
+
+        <div class="detail-item">
+            <span class="detail-label">Company</span>
+            <span class="detail-value">
+                @Model.Company
+            </span>
+        </div>
+
+        <div class="detail-item">
+            <span class="detail-label">Location</span>
+            <span class="detail-value">
+                @(string.IsNullOrWhiteSpace(Model.Location)
+                    ? "Not specified"
+                    : Model.Location)
+            </span>
+        </div>
+
+        <div class="detail-item">
+            <span class="detail-label">Application status</span>
+            <span class="detail-value">
+                @Model.Status
+            </span>
+        </div>
+
+        <div class="detail-item">
+            <span class="detail-label">Applied date</span>
+            <span class="detail-value">
+                @Model.AppliedDate.ToString("MMMM d, yyyy")
+            </span>
+        </div>
+
+        <div class="detail-item">
+            <span class="detail-label">Job type</span>
+            <span class="detail-value">
+                @(string.IsNullOrWhiteSpace(Model.JobType)
+                    ? "Not specified"
+                    : Model.JobType)
+            </span>
+        </div>
+
+        <div class="detail-item">
+            <span class="detail-label">Work mode</span>
+            <span class="detail-value">
+                @(string.IsNullOrWhiteSpace(Model.WorkMode)
+                    ? "Not specified"
+                    : Model.WorkMode)
+            </span>
+        </div>
+
+        <div class="detail-item">
+            <span class="detail-label">Salary</span>
+            <span class="detail-value">
+                @if (Model.SalaryMin.HasValue && Model.SalaryMax.HasValue)
+                {
+                    @($"{Model.SalaryMin:N0} - {Model.SalaryMax:N0}")
+                }
+                else if (Model.SalaryMin.HasValue)
+                {
+                    @($"From {Model.SalaryMin:N0}")
+                }
+                else if (Model.SalaryMax.HasValue)
+                {
+                    @($"Up to {Model.SalaryMax:N0}")
+                }
+                else
+                {
+                    @:Not specified
+                }
+            </span>
+        </div>
+
+        <div class="detail-item">
+            <span class="detail-label">Application deadline</span>
+            <span class="detail-value">
+                @(Model.Deadline.HasValue
+                    ? Model.Deadline.Value.ToString("MMMM d, yyyy")
+                    : "Not specified")
+            </span>
+        </div>
+
+        <div class="detail-item">
+            <span class="detail-label">Job posting</span>
+            <span class="detail-value">
+                @if (!string.IsNullOrWhiteSpace(Model.JobUrl))
+                {
+                    <a href="@Model.JobUrl"
+                       target="_blank"
+                       rel="noopener noreferrer">
+                        View job posting ↗
+                    </a>
+                }
+                else
+                {
+                    @:Not provided
+                }
+            </span>
+        </div>
+
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(Model.Notes))
+    {
+        <div class="mt-4">
+            <span class="detail-label">Notes</span>
+
+            <p class="detail-value mt-2">
+                @Model.Notes
+            </p>
+        </div>
+    }
+
+    <div class="detail-actions">
+
+        <a asp-action="Edit"
+           asp-route-id="@Model.Id"
+           class="btn btn-primary">
+            Edit job
+        </a>
+
+        @if (!string.IsNullOrWhiteSpace(Model.JobUrl))
+        {
+            <a href="@Model.JobUrl"
+               target="_blank"
+               rel="noopener noreferrer"
+               class="btn btn-outline-primary">
+                Open job posting ↗
+            </a>
+        }
+
+        <a asp-action="Delete"
+           asp-route-id="@Model.Id"
+           class="btn btn-outline-danger">
+            Delete job
+        </a>
+
+        <a asp-action="Index"
+           class="btn btn-outline-secondary">
+            Back to jobs
+        </a>
+
+    </div>
+
+</section>
+
+@if (Model.StatusHistory.Any())
+{
+    <section class="card mt-4">
+        <div class="card-body">
+
+            <h2 class="form-section-title">
+                Application timeline
+            </h2>
+
+            <p class="form-section-copy">
+                Track how this application has progressed over time.
+            </p>
+
+            <div class="timeline mt-4">
+
+                @foreach (var history in Model.StatusHistory)
+                {
+                    <div class="timeline-item">
+
+                        <div class="timeline-marker"></div>
+
+                        <div class="timeline-content">
+
+                            <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap">
+
+                                <div>
+                                    <strong>
+                                        @history.OldStatus
+                                        →
+                                        @history.NewStatus
+                                    </strong>
+
+                                    <div class="text-muted small mt-1">
+                                        Status updated
+                                    </div>
+                                </div>
+
+                                <span class="text-muted small">
+                                    @history.ChangedAt.ToString("MMM d, yyyy · h:mm tt")
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                }
+
+            </div>
+
+        </div>
+    </section>
+}

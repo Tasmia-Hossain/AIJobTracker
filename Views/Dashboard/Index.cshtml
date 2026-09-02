@@ -1,6 +1,424 @@
 @model AIJobTracker.Models.DashboardViewModel
-@{ ViewData["Title"] = "Dashboard"; }
-<div class="page-header"><div><p class="page-eyebrow">Overview</p><h1 class="page-title">Your job search, at a glance</h1><p class="page-subtitle">A clear view of the applications you are actively managing.</p></div><a asp-controller="Jobs" asp-action="Create" class="btn btn-primary">Add job</a></div>
-<section class="row g-3 dashboard-metrics"><div class="col-sm-6 col-xl-3"><article class="card metric-card accent"><span class="metric-icon">⌁</span><p class="metric-label">Total applications</p><p class="metric-value">@Model.TotalJobs</p><p class="metric-detail">Every opportunity in your tracker</p></article></div><div class="col-sm-6 col-xl-3"><article class="card metric-card"><span class="metric-icon metric-icon-blue">→</span><p class="metric-label">Applied</p><p class="metric-value">@Model.AppliedJobs</p><p class="metric-detail">Applications submitted</p></article></div><div class="col-sm-6 col-xl-3"><article class="card metric-card"><span class="metric-icon metric-icon-amber">◌</span><p class="metric-label">Interviews</p><p class="metric-value">@Model.InterviewJobs</p><p class="metric-detail">Conversations in progress</p></article></div><div class="col-sm-6 col-xl-3"><article class="card metric-card"><span class="metric-icon metric-icon-green">✦</span><p class="metric-label">Offers</p><p class="metric-value">@Model.OfferJobs</p><p class="metric-detail">Offers received</p></article></div></section>
-<section class="row g-3 g-lg-4 mt-1"><div class="col-lg-7"><article class="card dashboard-overview"><div class="card-header"><div><h2 class="form-section-title mb-1">Application status</h2><p class="form-text mb-0">Your current search distribution.</p></div><span class="overview-total">@Model.TotalJobs total</span></div><div class="card-body">@if (Model.TotalJobs == 0) { <div class="dashboard-empty"><span class="empty-state-mark">↗</span><div><strong>Your pipeline starts here.</strong><p>Add an opportunity to see your application progress take shape.</p></div></div> } else { <div class="status-chart" aria-label="Application status distribution"><div class="chart-row"><span>Saved</span><div class="chart-track"><i class="chart-saved" style="width: @(Model.SavedJobs * 100 / Model.TotalJobs)%"></i></div><strong>@Model.SavedJobs</strong></div><div class="chart-row"><span>Applied</span><div class="chart-track"><i class="chart-applied" style="width: @(Model.AppliedJobs * 100 / Model.TotalJobs)%"></i></div><strong>@Model.AppliedJobs</strong></div><div class="chart-row"><span>Interview</span><div class="chart-track"><i class="chart-interview" style="width: @(Model.InterviewJobs * 100 / Model.TotalJobs)%"></i></div><strong>@Model.InterviewJobs</strong></div><div class="chart-row"><span>Offer</span><div class="chart-track"><i class="chart-offer" style="width: @(Model.OfferJobs * 100 / Model.TotalJobs)%"></i></div><strong>@Model.OfferJobs</strong></div><div class="chart-row"><span>Closed</span><div class="chart-track"><i class="chart-closed" style="width: @((Model.RejectedJobs + Model.WithdrawnJobs) * 100 / Model.TotalJobs)%"></i></div><strong>@(Model.RejectedJobs + Model.WithdrawnJobs)</strong></div></div> }</div></article></div><div class="col-lg-5"><article class="card quick-actions-card"><div class="card-header"><h2 class="form-section-title mb-0">Quick actions</h2></div><div class="card-body"><a asp-controller="Jobs" asp-action="Create" class="quick-action"><span class="quick-action-icon">+</span><span><strong>Add an application</strong><small>Capture a new opportunity</small></span><b aria-hidden="true">→</b></a><a asp-controller="Jobs" asp-action="Index" class="quick-action"><span class="quick-action-icon">⌁</span><span><strong>Review your tracker</strong><small>Search and update roles</small></span><b aria-hidden="true">→</b></a><a asp-controller="AI" asp-action="Analyze" class="quick-action"><span class="quick-action-icon">✦</span><span><strong>Analyze a role</strong><small>Unpack a job description</small></span><b aria-hidden="true">→</b></a></div></article></div></section>
-<section class="card dashboard-momentum mt-4"><div><p class="page-eyebrow">Next best step</p><h2>@(Model.InterviewJobs > 0 ? "You have interview momentum—keep preparation focused." : "Keep your next opportunity moving.")</h2><p>Small, consistent updates make your job search easier to manage and easier to learn from.</p></div><a asp-controller="Jobs" asp-action="Index" class="btn btn-outline-primary">View all applications</a></section>
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="page-header">
+    <div>
+        <p class="page-eyebrow">Application tracker</p>
+
+        <h1 class="page-title">
+            Dashboard
+        </h1>
+
+        <p class="page-subtitle">
+            See your job search progress at a glance.
+        </p>
+    </div>
+
+    <a asp-controller="Jobs"
+       asp-action="Create"
+       class="btn btn-primary">
+        Add new job
+    </a>
+</div>
+
+<!-- Main statistics -->
+
+<section class="row g-3 mb-4">
+
+    <div class="col-6 col-lg-3">
+        <div class="card dashboard-stat-card h-100">
+            <div class="card-body">
+                <span class="stat-label">Total applications</span>
+                <h2 class="stat-value">
+                    @Model.TotalApplications
+                </h2>
+                <span class="stat-description">
+                    All tracked opportunities
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-6 col-lg-3">
+        <div class="card dashboard-stat-card h-100">
+            <div class="card-body">
+                <span class="stat-label">Applied</span>
+                <h2 class="stat-value">
+                    @Model.AppliedApplications
+                </h2>
+                <span class="stat-description">
+                    Applications submitted
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-6 col-lg-3">
+        <div class="card dashboard-stat-card h-100">
+            <div class="card-body">
+                <span class="stat-label">Interviews</span>
+                <h2 class="stat-value">
+                    @Model.InterviewApplications
+                </h2>
+                <span class="stat-description">
+                    Interview-stage applications
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-6 col-lg-3">
+        <div class="card dashboard-stat-card h-100">
+            <div class="card-body">
+                <span class="stat-label">Offers</span>
+                <h2 class="stat-value">
+                    @Model.OfferApplications
+                </h2>
+                <span class="stat-description">
+                    Successful outcomes
+                </span>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+<!-- Conversion analytics -->
+
+<section class="row g-3 mb-4">
+
+    <div class="col-md-4">
+        <div class="card dashboard-analytics-card h-100">
+            <div class="card-body">
+                <span class="stat-label">
+                    Application rate
+                </span>
+
+                <h2 class="stat-value">
+                    @Model.ApplicationRate%
+                </h2>
+
+                <p class="text-muted mb-0">
+                    Jobs that reached the Applied stage.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card dashboard-analytics-card h-100">
+            <div class="card-body">
+                <span class="stat-label">
+                    Interview rate
+                </span>
+
+                <h2 class="stat-value">
+                    @Model.InterviewRate%
+                </h2>
+
+                <p class="text-muted mb-0">
+                    Total applications that reached Interview.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card dashboard-analytics-card h-100">
+            <div class="card-body">
+                <span class="stat-label">
+                    Offer rate
+                </span>
+
+                <h2 class="stat-value">
+                    @Model.OfferRate%
+                </h2>
+
+                <p class="text-muted mb-0">
+                    Total applications that reached Offer.
+                </p>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+<!-- Status overview -->
+
+<section class="card mb-4">
+
+    <div class="card-body">
+
+        <div class="section-heading">
+            <div>
+                <h2>Application pipeline</h2>
+                <p>
+                    Current distribution of your applications.
+                </p>
+            </div>
+        </div>
+
+        <div class="row g-3">
+
+            <div class="col-6 col-md-4 col-lg-2">
+                <div class="pipeline-item">
+                    <span>Saved</span>
+                    <strong>@Model.SavedApplications</strong>
+                </div>
+            </div>
+
+            <div class="col-6 col-md-4 col-lg-2">
+                <div class="pipeline-item">
+                    <span>Applied</span>
+                    <strong>@Model.AppliedApplications</strong>
+                </div>
+            </div>
+
+            <div class="col-6 col-md-4 col-lg-2">
+                <div class="pipeline-item">
+                    <span>Interview</span>
+                    <strong>@Model.InterviewApplications</strong>
+                </div>
+            </div>
+
+            <div class="col-6 col-md-4 col-lg-2">
+                <div class="pipeline-item">
+                    <span>Offer</span>
+                    <strong>@Model.OfferApplications</strong>
+                </div>
+            </div>
+
+            <div class="col-6 col-md-4 col-lg-2">
+                <div class="pipeline-item">
+                    <span>Rejected</span>
+                    <strong>@Model.RejectedApplications</strong>
+                </div>
+            </div>
+
+            <div class="col-6 col-md-4 col-lg-2">
+                <div class="pipeline-item">
+                    <span>Withdrawn</span>
+                    <strong>@Model.WithdrawnApplications</strong>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- Monthly activity -->
+@if (Model.MonthlyApplications.Any())
+{
+    <section class="card mb-4">
+
+        <div class="card-body">
+
+            <div class="section-heading">
+                <div>
+                    <h2>Application activity</h2>
+                    <p>
+                        Applications added over the recent months.
+                    </p>
+                </div>
+            </div>
+
+            <div class="activity-chart">
+
+                @{
+                    var maxCount = Model.MonthlyApplications
+                        .Max(x => x.Count);
+
+                    if (maxCount == 0)
+                    {
+                        maxCount = 1;
+                    }
+                }
+
+                @foreach (var item in Model.MonthlyApplications)
+                {
+                    var height = Math.Max(
+                        12,
+                        (int)((double)item.Count / maxCount * 180));
+
+                    <div class="activity-bar-column">
+
+                        <span class="activity-count">
+                            @item.Count
+                        </span>
+
+                        <div class="activity-bar"
+                             style="height:@($"{height}px")">
+                        </div>
+
+                        <span class="activity-label">
+                            @item.Month
+                        </span>
+
+                    </div>
+                }
+
+            </div>
+
+        </div>
+
+    </section>
+}
+
+<!-- Recent applications + deadlines -->
+
+<section class="row g-3">
+
+    <div class="col-lg-7">
+
+        <section class="card h-100">
+
+            <div class="card-body">
+
+                <div class="section-heading">
+                    <div>
+                        <h2>Recent applications</h2>
+                        <p>
+                            Your latest tracked opportunities.
+                        </p>
+                    </div>
+
+                    <a asp-controller="Jobs"
+                       asp-action="Index"
+                       class="btn btn-sm btn-outline-secondary">
+                        View all
+                    </a>
+                </div>
+
+                @if (!Model.RecentApplications.Any())
+                {
+                    <div class="empty-state py-5">
+                        <h3>No applications yet</h3>
+
+                        <p>
+                            Add your first job application to start
+                            building your dashboard.
+                        </p>
+
+                        <a asp-controller="Jobs"
+                           asp-action="Create"
+                           class="btn btn-primary">
+                            Add job
+                        </a>
+                    </div>
+                }
+                else
+                {
+                    <div class="dashboard-job-list">
+
+                        @foreach (var job in Model.RecentApplications)
+                        {
+                            <div class="dashboard-job-item">
+
+                                <div>
+                                    <strong>
+                                        @job.Title
+                                    </strong>
+
+                                    <span>
+                                        @job.Company
+                                    </span>
+                                </div>
+
+                                <div class="text-end">
+
+                                    <span class="status-badge status-@job.Status.ToLower()">
+                                        @job.Status
+                                    </span>
+
+                                    <small class="d-block text-muted mt-1">
+                                        @job.AppliedDate.ToString("MMM d, yyyy")
+                                    </small>
+
+                                </div>
+
+                            </div>
+                        }
+
+                    </div>
+                }
+
+            </div>
+
+        </section>
+
+    </div>
+
+    <div class="col-lg-5">
+
+        <section class="card h-100">
+
+            <div class="card-body">
+
+                <div class="section-heading">
+                    <div>
+                        <h2>Upcoming deadlines</h2>
+                        <p>
+                            Application deadlines you should keep in mind.
+                        </p>
+                    </div>
+                </div>
+
+                @if (!Model.UpcomingDeadlines.Any())
+                {
+                    <div class="empty-state py-5">
+                        <h3>No upcoming deadlines</h3>
+
+                        <p>
+                            Add deadlines to your applications to keep
+                            important opportunities visible.
+                        </p>
+                    </div>
+                }
+                else
+                {
+                    <div class="dashboard-job-list">
+
+                        @foreach (var job in Model.UpcomingDeadlines)
+                        {
+                            <div class="dashboard-job-item">
+
+                                <div>
+                                    <strong>
+                                        @job.Title
+                                    </strong>
+
+                                    <span>
+                                        @job.Company
+                                    </span>
+                                </div>
+
+                                <div class="text-end">
+
+                                    <strong>
+                                        @job.Deadline?.ToString("MMM d")
+                                    </strong>
+
+                                    <small class="d-block text-muted">
+                                        Deadline
+                                    </small>
+
+                                </div>
+
+                            </div>
+                        }
+
+                    </div>
+                }
+
+            </div>
+
+        </section>
+
+    </div>
+
+</section>

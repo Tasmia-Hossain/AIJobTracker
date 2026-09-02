@@ -1,5 +1,673 @@
-@model List<AIJobTracker.Models.Job>
-@{ ViewData["Title"] = "My Jobs"; }
-<div class="page-header"><div><p class="page-eyebrow">Application tracker</p><h1 class="page-title">My job applications</h1><p class="page-subtitle">Search, filter, and keep every opportunity moving.</p></div><a asp-controller="Jobs" asp-action="Create" class="btn btn-primary">Add new job</a></div>
-<section class="card filter-card mb-4"><div class="card-body"><form asp-controller="Jobs" asp-action="Index" method="get"><div class="filter-heading"><span class="filter-icon">⌕</span><div><h2>Find an application</h2><p>Filter your tracker by keyword or application stage.</p></div></div><div class="row g-2 align-items-end"><div class="col-md-6"><label for="search" class="form-label">Search applications</label><input id="search" type="text" name="search" class="form-control" placeholder="Job title, company, or location" value="@Context.Request.Query["search"]" /></div><div class="col-md-4"><label for="status" class="form-label">Status</label><select id="status" name="status" class="form-select"><option value="">All statuses</option>@foreach (var item in new[] { "Saved", "Applied", "Interview", "Rejected", "Offer", "Withdrawn" }) { <option value="@item" selected="@(Context.Request.Query["status"] == item)">@item</option> }</select></div><div class="col-md-2"><button type="submit" class="btn btn-primary w-100">Apply filters</button></div></div></form></div></section>
-@if (!Model.Any()) { <section class="card empty-state jobs-empty"><div class="empty-state-mark" aria-hidden="true">↗</div><span class="empty-state-label">Your application tracker</span><h2>@(Context.Request.Query["search"].Any() || Context.Request.Query["status"].Any() ? "No matching applications" : "Your next opportunity belongs here.")</h2><p>@(Context.Request.Query["search"].Any() || Context.Request.Query["status"].Any() ? "Try a different search or clear your filters to view all applications." : "Start with the role you are considering most. You can update its progress any time.")</p><div class="d-flex justify-content-center gap-2 flex-wrap">@if (Context.Request.Query["search"].Any() || Context.Request.Query["status"].Any()) { <a asp-action="Index" class="btn btn-outline-primary">Clear filters</a> }<a asp-action="Create" class="btn btn-primary">Add your first job</a></div></section> } else { <div class="list-context"><span>@Model.Count application@(Model.Count == 1 ? "" : "s") shown</span></div><section class="row g-3">@foreach (var job in Model) { <div class="col-md-6 col-xl-4"><article class="card job-card h-100"><div class="card-body"><div class="job-card-top"><span class="company-monogram" aria-hidden="true">@job.Company.Substring(0, 1).ToUpper()</span><span class="status-badge status-@job.Status.ToLower()">@job.Status</span></div><h2 class="job-card-title">@job.Title</h2><p class="job-company">@job.Company</p><div class="job-meta"><span><i aria-hidden="true">⌖</i> @(string.IsNullOrWhiteSpace(job.Location) ? "Location not specified" : job.Location)</span><span><i aria-hidden="true">◷</i> Applied @job.AppliedDate.ToString("MMM d, yyyy")</span></div><div class="card-actions"><a asp-action="Details" asp-route-id="@job.Id" class="btn btn-primary btn-sm">View details</a><a asp-action="Edit" asp-route-id="@job.Id" class="btn btn-icon btn-sm" aria-label="Edit @job.Title" title="Edit application">✎</a><a asp-action="Delete" asp-route-id="@job.Id" class="btn btn-icon btn-danger-soft btn-sm" aria-label="Delete @job.Title" title="Delete application">×</a></div></div></article></div>}</section> }
+@model IEnumerable<AIJobTracker.Models.Job>
+
+@{
+    ViewData["Title"] = "My Jobs";
+
+    var search = ViewBag.Search as string ?? "";
+    var status = ViewBag.Status as string ?? "";
+    var jobType = ViewBag.JobType as string ?? "";
+    var workMode = ViewBag.WorkMode as string ?? "";
+    var deadline = ViewBag.Deadline as string ?? "";
+    var sortBy = ViewBag.SortBy as string ?? "";
+
+    var minSalary = ViewBag.MinSalary as decimal?;
+    var maxSalary = ViewBag.MaxSalary as decimal?;
+
+    var appliedFrom = ViewBag.AppliedFrom as string ?? "";
+    var appliedTo = ViewBag.AppliedTo as string ?? "";
+
+    var hasFilters =
+        !string.IsNullOrWhiteSpace(search) ||
+        !string.IsNullOrWhiteSpace(status) ||
+        !string.IsNullOrWhiteSpace(jobType) ||
+        !string.IsNullOrWhiteSpace(workMode) ||
+        minSalary.HasValue ||
+        maxSalary.HasValue ||
+        !string.IsNullOrWhiteSpace(appliedFrom) ||
+        !string.IsNullOrWhiteSpace(appliedTo) ||
+        !string.IsNullOrWhiteSpace(deadline);
+}
+
+<div class="container py-4">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+        <div>
+            <h1 class="fw-bold mb-1">My Job Applications</h1>
+            <p class="text-muted mb-0">
+                Search, filter and organize your applications.
+            </p>
+        </div>
+
+        <a asp-action="Create" class="btn btn-primary">
+            + Add Job
+        </a>
+    </div>
+
+    <!-- Search & Filters -->
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body p-4">
+
+            <form asp-action="Index" method="get">
+
+                <!-- Search -->
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">
+                        Search
+                    </label>
+
+                    <input type="text"
+                           name="search"
+                           value="@search"
+                           class="form-control"
+                           placeholder="Search by job title, company or location..." />
+                </div>
+
+                <!-- Filters -->
+                <div class="row g-3">
+
+                    <!-- Status -->
+                    <div class="col-md-4 col-lg-3">
+                        <label class="form-label">Status</label>
+
+                        <select name="status" class="form-select">
+                            <option value="">All statuses</option>
+
+                            @if (status == "Saved")
+                            {
+                                <option value="Saved" selected>Saved</option>
+                            }
+                            else
+                            {
+                                <option value="Saved">Saved</option>
+                            }
+
+                            @if (status == "Applied")
+                            {
+                                <option value="Applied" selected>Applied</option>
+                            }
+                            else
+                            {
+                                <option value="Applied">Applied</option>
+                            }
+
+                            @if (status == "Interview")
+                            {
+                                <option value="Interview" selected>Interview</option>
+                            }
+                            else
+                            {
+                                <option value="Interview">Interview</option>
+                            }
+
+                            @if (status == "Offer")
+                            {
+                                <option value="Offer" selected>Offer</option>
+                            }
+                            else
+                            {
+                                <option value="Offer">Offer</option>
+                            }
+
+                            @if (status == "Rejected")
+                            {
+                                <option value="Rejected" selected>Rejected</option>
+                            }
+                            else
+                            {
+                                <option value="Rejected">Rejected</option>
+                            }
+
+                            @if (status == "Withdrawn")
+                            {
+                                <option value="Withdrawn" selected>Withdrawn</option>
+                            }
+                            else
+                            {
+                                <option value="Withdrawn">Withdrawn</option>
+                            }
+                        </select>
+                    </div>
+
+                    <!-- Job Type -->
+                    <div class="col-md-4 col-lg-3">
+                        <label class="form-label">Job Type</label>
+
+                        <select name="jobType" class="form-select">
+                            <option value="">All types</option>
+
+                            @if (jobType == "Full-time")
+                            {
+                                <option value="Full-time" selected>Full-time</option>
+                            }
+                            else
+                            {
+                                <option value="Full-time">Full-time</option>
+                            }
+
+                            @if (jobType == "Part-time")
+                            {
+                                <option value="Part-time" selected>Part-time</option>
+                            }
+                            else
+                            {
+                                <option value="Part-time">Part-time</option>
+                            }
+
+                            @if (jobType == "Internship")
+                            {
+                                <option value="Internship" selected>Internship</option>
+                            }
+                            else
+                            {
+                                <option value="Internship">Internship</option>
+                            }
+
+                            @if (jobType == "Contract")
+                            {
+                                <option value="Contract" selected>Contract</option>
+                            }
+                            else
+                            {
+                                <option value="Contract">Contract</option>
+                            }
+                        </select>
+                    </div>
+
+                    <!-- Work Mode -->
+                    <div class="col-md-4 col-lg-3">
+                        <label class="form-label">Work Mode</label>
+
+                        <select name="workMode" class="form-select">
+                            <option value="">All work modes</option>
+
+                            @if (workMode == "Remote")
+                            {
+                                <option value="Remote" selected>Remote</option>
+                            }
+                            else
+                            {
+                                <option value="Remote">Remote</option>
+                            }
+
+                            @if (workMode == "Hybrid")
+                            {
+                                <option value="Hybrid" selected>Hybrid</option>
+                            }
+                            else
+                            {
+                                <option value="Hybrid">Hybrid</option>
+                            }
+
+                            @if (workMode == "On-site")
+                            {
+                                <option value="On-site" selected>On-site</option>
+                            }
+                            else
+                            {
+                                <option value="On-site">On-site</option>
+                            }
+                        </select>
+                    </div>
+
+                    <!-- Deadline -->
+                    <div class="col-md-4 col-lg-3">
+                        <label class="form-label">Deadline</label>
+
+                        <select name="deadline" class="form-select">
+                            <option value="">All deadlines</option>
+
+                            @if (deadline == "upcoming")
+                            {
+                                <option value="upcoming" selected>
+                                    Upcoming
+                                </option>
+                            }
+                            else
+                            {
+                                <option value="upcoming">
+                                    Upcoming
+                                </option>
+                            }
+
+                            @if (deadline == "overdue")
+                            {
+                                <option value="overdue" selected>
+                                    Overdue
+                                </option>
+                            }
+                            else
+                            {
+                                <option value="overdue">
+                                    Overdue
+                                </option>
+                            }
+
+                            @if (deadline == "no-deadline")
+                            {
+                                <option value="no-deadline" selected>
+                                    No deadline
+                                </option>
+                            }
+                            else
+                            {
+                                <option value="no-deadline">
+                                    No deadline
+                                </option>
+                            }
+                        </select>
+                    </div>
+
+                    <!-- Minimum Salary -->
+                    <div class="col-md-6 col-lg-3">
+                        <label class="form-label">Minimum Salary</label>
+
+                        <input type="number"
+                               name="minSalary"
+                               value="@minSalary"
+                               class="form-control"
+                               min="0"
+                               step="0.01"
+                               placeholder="e.g. 30000" />
+                    </div>
+
+                    <!-- Maximum Salary -->
+                    <div class="col-md-6 col-lg-3">
+                        <label class="form-label">Maximum Salary</label>
+
+                        <input type="number"
+                               name="maxSalary"
+                               value="@maxSalary"
+                               class="form-control"
+                               min="0"
+                               step="0.01"
+                               placeholder="e.g. 100000" />
+                    </div>
+
+                    <!-- Applied From -->
+                    <div class="col-md-6 col-lg-3">
+                        <label class="form-label">Applied From</label>
+
+                        <input type="date"
+                               name="appliedFrom"
+                               value="@appliedFrom"
+                               class="form-control" />
+                    </div>
+
+                    <!-- Applied To -->
+                    <div class="col-md-6 col-lg-3">
+                        <label class="form-label">Applied To</label>
+
+                        <input type="date"
+                               name="appliedTo"
+                               value="@appliedTo"
+                               class="form-control" />
+                    </div>
+
+                </div>
+
+                <!-- Buttons -->
+                <div class="d-flex flex-wrap gap-2 mt-4">
+
+                    <button type="submit"
+                            class="btn btn-primary">
+                        Search & Filter
+                    </button>
+
+                    @if (hasFilters)
+                    {
+                        <a asp-action="Index"
+                           class="btn btn-outline-secondary">
+                            Reset Filters
+                        </a>
+                    }
+
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+    <!-- Results Header -->
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-3">
+
+        <div>
+            <h5 class="mb-1">
+                Applications
+            </h5>
+
+            <span class="text-muted small">
+                @Model.Count() result@(Model.Count() == 1 ? "" : "s")
+            </span>
+        </div>
+
+        <!-- Sorting -->
+        <form asp-action="Index"
+              method="get"
+              class="d-flex align-items-center gap-2">
+
+            <input type="hidden" name="search" value="@search" />
+            <input type="hidden" name="status" value="@status" />
+            <input type="hidden" name="jobType" value="@jobType" />
+            <input type="hidden" name="workMode" value="@workMode" />
+            <input type="hidden" name="minSalary" value="@minSalary" />
+            <input type="hidden" name="maxSalary" value="@maxSalary" />
+            <input type="hidden" name="appliedFrom" value="@appliedFrom" />
+            <input type="hidden" name="appliedTo" value="@appliedTo" />
+            <input type="hidden" name="deadline" value="@deadline" />
+
+            <label class="small text-muted">
+                Sort:
+            </label>
+
+            <select name="sortBy"
+                    class="form-select form-select-sm"
+                    onchange="this.form.submit()">
+
+                <option value="">Newest first</option>
+
+                @if (sortBy == "oldest")
+                {
+                    <option value="oldest" selected>
+                        Oldest first
+                    </option>
+                }
+                else
+                {
+                    <option value="oldest">
+                        Oldest first
+                    </option>
+                }
+
+                @if (sortBy == "title-asc")
+                {
+                    <option value="title-asc" selected>
+                        Title A-Z
+                    </option>
+                }
+                else
+                {
+                    <option value="title-asc">
+                        Title A-Z
+                    </option>
+                }
+
+                @if (sortBy == "title-desc")
+                {
+                    <option value="title-desc" selected>
+                        Title Z-A
+                    </option>
+                }
+                else
+                {
+                    <option value="title-desc">
+                        Title Z-A
+                    </option>
+                }
+
+                @if (sortBy == "company-asc")
+                {
+                    <option value="company-asc" selected>
+                        Company A-Z
+                    </option>
+                }
+                else
+                {
+                    <option value="company-asc">
+                        Company A-Z
+                    </option>
+                }
+
+                @if (sortBy == "company-desc")
+                {
+                    <option value="company-desc" selected>
+                        Company Z-A
+                    </option>
+                }
+                else
+                {
+                    <option value="company-desc">
+                        Company Z-A
+                    </option>
+                }
+
+                @if (sortBy == "deadline-asc")
+                {
+                    <option value="deadline-asc" selected>
+                        Deadline nearest
+                    </option>
+                }
+                else
+                {
+                    <option value="deadline-asc">
+                        Deadline nearest
+                    </option>
+                }
+
+                @if (sortBy == "deadline-desc")
+                {
+                    <option value="deadline-desc" selected>
+                        Deadline latest
+                    </option>
+                }
+                else
+                {
+                    <option value="deadline-desc">
+                        Deadline latest
+                    </option>
+                }
+
+                @if (sortBy == "salary-high")
+                {
+                    <option value="salary-high" selected>
+                        Highest salary
+                    </option>
+                }
+                else
+                {
+                    <option value="salary-high">
+                        Highest salary
+                    </option>
+                }
+
+                @if (sortBy == "salary-low")
+                {
+                    <option value="salary-low" selected>
+                        Lowest salary
+                    </option>
+                }
+                else
+                {
+                    <option value="salary-low">
+                        Lowest salary
+                    </option>
+                }
+
+            </select>
+        </form>
+
+    </div>
+
+    <!-- Job List -->
+    @if (!Model.Any())
+    {
+        <div class="card border-0 shadow-sm">
+            <div class="card-body text-center py-5">
+
+                <h5 class="fw-semibold">
+                    No applications found
+                </h5>
+
+                <p class="text-muted mb-3">
+                    Try changing your search or filter criteria.
+                </p>
+
+                <a asp-action="Create"
+                   class="btn btn-primary">
+                    Add a Job
+                </a>
+
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="row g-3">
+
+            @foreach (var job in Model)
+            {
+                <div class="col-12">
+
+                    <div class="card border-0 shadow-sm">
+
+                        <div class="card-body">
+
+                            <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+
+                                <div>
+                                    <h5 class="mb-1 fw-semibold">
+                                        @job.Title
+                                    </h5>
+
+                                    <div class="text-muted">
+                                        @job.Company
+                                    </div>
+
+                                    @if (!string.IsNullOrWhiteSpace(job.Location))
+                                    {
+                                        <div class="small text-muted mt-1">
+                                            📍 @job.Location
+                                        </div>
+                                    }
+                                </div>
+
+                                <span class="badge bg-primary">
+                                    @job.Status
+                                </span>
+
+                            </div>
+
+                            <div class="row g-3 mt-3">
+
+                                @if (!string.IsNullOrWhiteSpace(job.JobType))
+                                {
+                                    <div class="col-md-3">
+                                        <div class="small text-muted">
+                                            Job Type
+                                        </div>
+                                        <div class="fw-medium">
+                                            @job.JobType
+                                        </div>
+                                    </div>
+                                }
+
+                                @if (!string.IsNullOrWhiteSpace(job.WorkMode))
+                                {
+                                    <div class="col-md-3">
+                                        <div class="small text-muted">
+                                            Work Mode
+                                        </div>
+                                        <div class="fw-medium">
+                                            @job.WorkMode
+                                        </div>
+                                    </div>
+                                }
+
+                                <div class="col-md-3">
+                                    <div class="small text-muted">
+                                        Applied
+                                    </div>
+                                    <div class="fw-medium">
+                                        @job.AppliedDate.ToString("MMM d, yyyy")
+                                    </div>
+                                </div>
+
+                                @if (job.Deadline.HasValue)
+                                {
+                                    <div class="col-md-3">
+                                        <div class="small text-muted">
+                                            Deadline
+                                        </div>
+                                        <div class="fw-medium">
+                                            @job.Deadline.Value.ToString("MMM d, yyyy")
+                                        </div>
+                                    </div>
+                                }
+
+                            </div>
+
+                            @if (job.SalaryMin.HasValue || job.SalaryMax.HasValue)
+                            {
+                                <div class="mt-3">
+
+                                    <div class="small text-muted">
+                                        Salary
+                                    </div>
+
+                                    <div class="fw-medium">
+                                        @if (job.SalaryMin.HasValue && job.SalaryMax.HasValue)
+                                        {
+                                            @job.SalaryMin.Value.ToString("N0")
+                                            <span> - </span>
+                                            @job.SalaryMax.Value.ToString("N0")
+                                        }
+                                        else if (job.SalaryMin.HasValue)
+                                        {
+                                            <span>
+                                                From @job.SalaryMin.Value.ToString("N0")
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span>
+                                                Up to @job.SalaryMax!.Value.ToString("N0")
+                                            </span>
+                                        }
+                                    </div>
+
+                                </div>
+                            }
+
+                            <div class="d-flex flex-wrap gap-2 mt-4">
+
+                                <a asp-action="Details"
+                                   asp-route-id="@job.Id"
+                                   class="btn btn-sm btn-outline-primary">
+                                    Details
+                                </a>
+
+                                <a asp-action="Edit"
+                                   asp-route-id="@job.Id"
+                                   class="btn btn-sm btn-outline-secondary">
+                                    Edit
+                                </a>
+
+                                <a asp-action="Delete"
+                                   asp-route-id="@job.Id"
+                                   class="btn btn-sm btn-outline-danger">
+                                    Delete
+                                </a>
+
+                                @if (!string.IsNullOrWhiteSpace(job.JobUrl))
+                                {
+                                    <a href="@job.JobUrl"
+                                       target="_blank"
+                                       rel="noopener noreferrer"
+                                       class="btn btn-sm btn-outline-success">
+                                        Job Post ↗
+                                    </a>
+                                }
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            }
+
+        </div>
+    }
+
+</div>
