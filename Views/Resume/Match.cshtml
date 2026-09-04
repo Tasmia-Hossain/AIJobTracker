@@ -1,29 +1,30 @@
+﻿@model AIJobTracker.ViewModels.ResumeMatchViewModel
+
 @{
-    ViewData["Title"] = "AI Job Analyzer";
+    ViewData["Title"] = "Resume Matcher";
 }
 
 <div class="form-shell analyzer-shell">
 
     <div class="page-header">
         <div>
-            <p class="page-eyebrow">AI-assisted preparation</p>
+            <p class="page-eyebrow">AI-assisted application preparation</p>
 
             <h1 class="page-title">
-                Understand the role before you apply.
+                See how well your resume matches a job.
             </h1>
 
             <p class="page-subtitle">
-                Analyze a job description with AI to identify
-                skills, requirements, keywords, gaps and a
-                practical preparation plan.
+                Compare your resume against one of your saved jobs
+                to identify matches, skill gaps and preparation priorities.
             </p>
         </div>
     </div>
 
-    @if (ViewBag.Error != null)
+    @if (!string.IsNullOrWhiteSpace(Model.Error))
     {
         <div class="alert alert-danger" role="alert">
-            @ViewBag.Error
+            @Model.Error
         </div>
     }
 
@@ -39,95 +40,98 @@
 
                 <div>
                     <h2 class="form-section-title mb-0">
-                        Analyze a job
+                        Match your resume
                     </h2>
 
                     <p class="form-text mb-0">
-                        Paste the complete job description for
-                        the most useful results.
+                        Select a saved job and paste your resume text.
                     </p>
                 </div>
 
             </div>
 
-            <form asp-controller="AI"
-                  asp-action="Analyze"
+            <form asp-controller="Resume"
+                  asp-action="Match"
                   method="post"
-                  data-analyzer-form>
+                  data-resume-match-form>
 
                 @Html.AntiForgeryToken()
 
-                <!-- Job Description -->
+                <div class="mb-4">
+
+                    <label asp-for="JobId"
+                           class="form-label fw-semibold">
+                        Select Job
+                    </label>
+
+                    @if (Model.Jobs.Any())
+                    {
+                        <select asp-for="JobId"
+                                class="form-select"
+                                required>
+
+                            <option value="">
+                                -- Select a job --
+                            </option>
+
+                            @foreach (var job in Model.Jobs)
+                            {
+                                <option value="@job.Id">
+                                    @job.Title — @job.Company
+                                </option>
+                            }
+
+                        </select>
+                    }
+                    else
+                    {
+                        <div class="alert alert-info mb-0">
+                            You do not have any saved jobs yet.
+                            Add a job first to use resume matching.
+                        </div>
+                    }
+
+                </div>
 
                 <div class="mb-4">
 
-                    <label for="jobDescription"
+                    <label asp-for="ResumeText"
                            class="form-label fw-semibold">
-
-                        Job Description
-
+                        Resume
                     </label>
 
-                    <textarea id="jobDescription"
-                              name="jobDescription"
+                    <textarea asp-for="ResumeText"
                               class="form-control analyzer-textarea"
-                              rows="14"
+                              rows="16"
                               maxlength="20000"
-                              placeholder="Paste the complete job description here..."
-                              required>@ViewBag.JobDescription</textarea>
+                              placeholder="Paste your resume text here..."
+                              required></textarea>
 
                     <div class="analyzer-footer">
 
                         <span class="input-count"
-                              data-input-count>
+                              data-resume-count>
                             0 characters
                         </span>
 
                     </div>
 
-                </div>
-
-
-                <!-- My Skills -->
-
-                <div class="mb-4">
-
-                    <label for="mySkills"
-                           class="form-label fw-semibold">
-
-                        My Skills
-                        <span class="text-muted fw-normal">
-                            (Optional)
-                        </span>
-
-                    </label>
-
-                    <textarea id="mySkills"
-                              name="mySkills"
-                              class="form-control"
-                              rows="5"
-                              maxlength="5000"
-                              placeholder="Example: C#, ASP.NET Core, SQL Server, Entity Framework Core, Git, GitHub, Bootstrap, JavaScript...">@ViewBag.MySkills</textarea>
-
                     <div class="form-text">
-                        Add your current skills so AI can compare
-                        them with the job requirements and identify
-                        missing or weak areas.
+                        Include your education, skills, projects,
+                        experience and technologies for a more useful comparison.
                     </div>
 
                 </div>
-
-
-                <!-- Analyze Button -->
 
                 <div class="form-actions">
 
                     <button type="submit"
                             class="btn btn-primary"
-                            data-analyze-button>
+                            data-match-button
+                            disabled="@(!Model.Jobs.Any())">
 
                         <span class="button-label">
-                            Analyze with AI
+                            Match Resume with AI
                         </span>
 
                         <span class="button-loading"
@@ -135,7 +139,7 @@
 
                             <span class="spinner-border spinner-border-sm"></span>
 
-                            Analyzing…
+                            Matching…
 
                         </span>
 
@@ -149,9 +153,7 @@
 
     </section>
 
-
-    <!-- AI Result -->
-    @if (ViewBag.AnalysisHtml != null)
+    @if (!string.IsNullOrWhiteSpace(Model.AnalysisHtml))
     {
         <section class="card analysis-card mt-4">
 
@@ -167,7 +169,7 @@
                     <div class="analysis-heading-row">
 
                         <h2 class="form-section-title mb-0">
-                            AI analysis
+                            Resume match analysis
                         </h2>
 
                         <span class="ai-generated-label">
@@ -177,8 +179,7 @@
                     </div>
 
                     <p class="form-text mb-0">
-                        A structured analysis of the role and
-                        your potential skill gaps.
+                        A comparison between your resume and the selected job.
                     </p>
 
                 </div>
@@ -188,7 +189,7 @@
             <div class="card-body">
 
                 <div class="ai-analysis">
-                    @Html.Raw(ViewBag.AnalysisHtml)
+                    @Html.Raw(Model.AnalysisHtml)
                 </div>
 
             </div>
@@ -198,23 +199,22 @@
 
 </div>
 
-
 @section Scripts
 {
     <script>
         document.addEventListener("DOMContentLoaded", function () {
 
             const form =
-                document.querySelector("[data-analyzer-form]");
+                document.querySelector("[data-resume-match-form]");
 
             const textarea =
-                document.getElementById("jobDescription");
+                document.getElementById("ResumeText");
 
             const counter =
-                document.querySelector("[data-input-count]");
+                document.querySelector("[data-resume-count]");
 
             const button =
-                document.querySelector("[data-analyze-button]");
+                document.querySelector("[data-match-button]");
 
             if (textarea && counter) {
 

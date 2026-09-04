@@ -24,6 +24,14 @@ namespace AIJobTracker.Data
                 .WithMany(j => j.StatusHistory)
                 .HasForeignKey(h => h.JobId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<Job>()
+                .Property(j => j.SalaryMin)
+                .HasPrecision(18, 2);
+
+            builder.Entity<Job>()
+                .Property(j => j.SalaryMax)
+                .HasPrecision(18, 2);
         }
     }
 }

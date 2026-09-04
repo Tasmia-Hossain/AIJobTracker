@@ -35,6 +35,9 @@ namespace AIJobTracker.Models
 
         public DateTime? Deadline { get; set; }
 
+        [StringLength(10000)]
+        public string? JobDescription { get; set; }
+
         [StringLength(2000)]
         public string? Notes { get; set; }
 

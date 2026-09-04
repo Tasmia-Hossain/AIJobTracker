@@ -1,9 +1,11 @@
 ﻿using AIJobTracker.Services;
 using Markdig;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AIJobTracker.Controllers
 {
+    [Authorize]
     public class AIController : Controller
     {
         private readonly GeminiService _geminiService;
@@ -21,8 +23,13 @@ namespace AIJobTracker.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Analyze(string jobDescription)
+        public async Task<IActionResult> Analyze(
+            string jobDescription,
+            string? mySkills)
         {
+            ViewBag.JobDescription = jobDescription;
+            ViewBag.MySkills = mySkills;
+
             if (string.IsNullOrWhiteSpace(jobDescription))
             {
                 ViewBag.Error = "Please enter a job description.";
@@ -32,20 +39,23 @@ namespace AIJobTracker.Controllers
             try
             {
                 var result = await _geminiService
-                    .AnalyzeJobDescriptionAsync(jobDescription);
+                    .AnalyzeJobDescriptionAsync(
+                        jobDescription,
+                        mySkills);
 
                 var pipeline = new MarkdownPipelineBuilder()
                     .UseAdvancedExtensions()
                     .Build();
 
-                ViewBag.AnalysisHtml = Markdown.ToHtml(result, pipeline);
+                ViewBag.AnalysisHtml = Markdown.ToHtml(
+                    result,
+                    pipeline);
             }
             catch (Exception)
             {
-                ViewBag.Error = "AI analysis failed. Please try again.";
+                ViewBag.Error =
+                    "AI analysis failed. Please try again.";
             }
-
-            ViewBag.JobDescription = jobDescription;
 
             return View();
         }

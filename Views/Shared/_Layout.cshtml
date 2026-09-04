@@ -57,6 +57,14 @@
                                     AI Analyzer
                                 </a>
                             </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Resume" ? "active" : "")"
+                                   asp-controller="Resume"
+                                   asp-action="Match">
+                                    Resume Matcher
+                                </a>
+                            </li>
                         }
 
                     </ul>

@@ -133,6 +133,17 @@
 
     </div>
 
+    @if (!string.IsNullOrWhiteSpace(Model.JobDescription))
+    {
+        <div class="mt-4">
+            <span class="detail-label">Job Description</span>
+
+            <div class="job-description-text mt-2">
+                @Model.JobDescription
+            </div>
+        </div>
+    }
+
     @if (!string.IsNullOrWhiteSpace(Model.Notes))
     {
         <div class="mt-4">

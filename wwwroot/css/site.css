@@ -204,3 +204,94 @@
     .job-card:hover {
         transform: translateY(-2px);
     }
+/* AI Analyzer Upgrade */
+
+.analyzer-shell {
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.analyzer-card,
+.analysis-card {
+    border-radius: 18px;
+}
+
+.analyzer-card .form-control {
+    border-radius: 12px;
+}
+
+.analyzer-card .form-label {
+    margin-bottom: 0.5rem;
+}
+
+.analyzer-textarea {
+    resize: vertical;
+    min-height: 320px;
+}
+
+.analyzer-footer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 0.5rem;
+}
+
+.input-count {
+    font-size: 0.8rem;
+    color: var(--text-muted, #6c757d);
+}
+
+.ai-analysis {
+    
+}
+
+.ai-analysis h2 {
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+    font-size: 1.25rem;
+}
+
+.ai-analysis h2:first-child {
+    margin-top: 0;
+}
+
+.ai-analysis ul {
+    padding-left: 1.25rem;
+}
+
+.ai-analysis li {
+    margin-bottom: 0.4rem;
+}
+
+.ai-analysis strong {
+    font-weight: 650;
+}
+
+.button-loading {
+    display: none;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Resume Matcher */
+
+.resume-match-shell {
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.resume-match-shell .form-select {
+    border-radius: 12px;
+}
+
+.resume-match-shell .analyzer-textarea {
+    min-height: 360px;
+}
+
+.resume-match-shell .analysis-card {
+    margin-top: 1.5rem;
+}
+
+.job-description-text {
+    white-space: pre-line;
+    line-height: 1.7;
+}
