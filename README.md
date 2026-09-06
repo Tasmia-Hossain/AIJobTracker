@@ -1,4 +1,4 @@
-﻿# AIJobTracker
+# AIJobTracker
 
 <p align="center">
   <img src="https://img.shields.io/badge/.NET-10-512BD4?style=flat-square&logo=dotnet" alt=".NET 10">
@@ -11,7 +11,7 @@
 
 > **A focused job-search workspace for organizing applications, tracking progress, analyzing job descriptions with AI, and matching resumes to job opportunities.**
 
-AIJobTracker is a full-stack **ASP.NET Core MVC** web application that helps job seekers manage their entire application pipeline from one place.
+AIJobTracker is a full-stack **ASP.NET Core MVC** web application designed to help job seekers manage their application pipeline from one place.
 
 Users can securely create an account, manage job applications, search and filter opportunities, track application status history, monitor progress through an analytics dashboard, analyze job descriptions with AI, and compare their resume against saved job opportunities.
 
@@ -19,41 +19,68 @@ Users can securely create an account, manage job applications, search and filter
 
 ## Table of Contents
 
-- [Highlights](#highlights)
-- [Screenshots](#screenshots)
-- [Features](#features)
-- [Tech Stack](#tech-stack)
-- [Architecture & Project Structure](#architecture--project-structure)
-- [Application Workflow](#application-workflow)
-- [Database](#database)
-- [CRUD Operations](#crud-operations)
-- [Validation & Security](#validation--security)
-- [Getting Started](#getting-started)
-- [Build & Verification](#build--verification)
-- [Learning Goals](#learning-goals)
-- [Future Improvements](#future-improvements)
-- [Project Status](#project-status)
-- [Author](#author)
-- [License](#license)
+* [Highlights](#highlights)
+* [Why AIJobTracker?](#why-aijobtracker)
+* [Demo Video](#demo-video)
+* [Screenshots](#screenshots)
+* [Features](#features)
+* [Tech Stack](#tech-stack)
+* [Architecture & Project Structure](#architecture--project-structure)
+* [Application Workflow](#application-workflow)
+* [Database](#database)
+* [Validation & Security](#validation--security)
+* [AI Integration](#ai-integration)
+* [Getting Started](#getting-started)
+* [Build & Verification](#build--verification)
+* [Future Improvements](#future-improvements)
+* [Project Status](#project-status)
+* [Author](#author)
+* [License](#license)
 
 ---
 
 ## Highlights
 
-- **Secure authentication** with ASP.NET Core Identity
-- **User-specific data isolation** for job applications
-- **Complete CRUD workflow** for job applications
-- **Advanced search, filtering, and sorting**
-- **Dashboard analytics** with application statistics and monthly activity
-- **Detailed job information**, including salary, job type, work mode, deadline, URL, notes, and description
-- **Application status history and timeline**
-- **AI Job Analyzer** powered by Google Gemini
-- **AI resume-to-job matching**, with match score, skill gaps, matched keywords, and recommendations
-- **Markdown-formatted AI reports** rendered using Markdig
-- **Responsive light and dark theme**
-- **Server-side and client-side validation**
-- **Responsive SaaS-style user interface**
-- **SQL Server and Entity Framework Core** persistence
+* **Secure authentication** with ASP.NET Core Identity
+* **User-specific data isolation** for job applications
+* **Complete CRUD workflow** for job applications
+* **Advanced search, filtering, and sorting**
+* **Dashboard analytics** with application statistics and monthly activity
+* **Detailed job information**, including salary, job type, work mode, deadline, URL, notes, and description
+* **Application status history and timeline**
+* **AI Job Analyzer** powered by Google Gemini
+* **AI resume-to-job matching**, with match score, skill gaps, matched keywords, and recommendations
+* **Markdown-formatted AI reports** rendered using Markdig
+* **Responsive light and dark theme**
+* **Server-side and client-side validation**
+* **Responsive SaaS-style user interface**
+* **SQL Server and Entity Framework Core** persistence
+
+---
+
+## Why AIJobTracker?
+
+Job seekers often manage applications across spreadsheets, browser bookmarks, emails, and personal notes.
+
+AIJobTracker brings application tracking, progress analytics, job-description analysis, and resume-to-job matching together into a single workspace.
+
+The project was designed as a practical portfolio application to demonstrate real-world web development concepts using the **ASP.NET Core ecosystem**, relational databases, authentication, and external AI API integration.
+
+---
+
+## Demo Video
+
+A complete walkthrough of AIJobTracker covering authentication, job application management, dashboard analytics, AI job analysis, and AI-powered resume-to-job matching.
+
+<p align="center">
+  <a href="https://youtu.be/Z-YWoROj0PY">
+    <img src="screenshots/dashboard.png" width="80%" alt="Watch AIJobTracker Demo">
+  </a>
+</p>
+
+<p align="center">
+  🎥 <strong><a href="https://youtu.be/Z-YWoROj0PY">Watch the Full Demo on YouTube</a></strong>
+</p>
 
 ---
 
@@ -151,13 +178,13 @@ AIJobTracker uses **ASP.NET Core Identity** to provide secure user authenticatio
 
 The application supports:
 
-- User registration
-- User login
-- Secure logout
-- Protected application-management pages
-- User-specific job data
-- User-specific dashboard statistics
-- Anti-forgery protection for POST requests
+* User registration
+* User login
+* Secure logout
+* Protected application-management pages
+* User-specific job data
+* User-specific dashboard statistics
+* Anti-forgery protection for POST requests
 
 Each user's job applications are isolated from other users.
 
@@ -165,28 +192,28 @@ Each user's job applications are isolated from other users.
 
 Users can:
 
-- Add new job applications
-- View application details
-- Edit application information
-- Delete applications with confirmation
-- Track the current application status
-- Store job descriptions
-- Store application notes
+* Add new job applications
+* View application details
+* Edit application information
+* Delete applications with confirmation
+* Track the current application status
+* Store job descriptions
+* Store application notes
 
 Each job application can contain:
 
-- Job title
-- Company
-- Location
-- Application status
-- Applied date
-- Job URL
-- Minimum and maximum salary
-- Job type
-- Work mode
-- Application deadline
-- Job description
-- Personal notes
+* Job title
+* Company
+* Location
+* Application status
+* Applied date
+* Job URL
+* Minimum and maximum salary
+* Job type
+* Work mode
+* Application deadline
+* Job description
+* Personal notes
 
 ### Application Status History
 
@@ -194,12 +221,12 @@ AIJobTracker maintains a history of status changes for each application.
 
 Supported statuses include:
 
-- **Saved**
-- **Applied**
-- **Interview**
-- **Offer**
-- **Rejected**
-- **Withdrawn**
+* **Saved**
+* **Applied**
+* **Interview**
+* **Offer**
+* **Rejected**
+* **Withdrawn**
 
 The application records status transitions and displays them as a timeline on the job details page.
 
@@ -215,12 +242,12 @@ This makes it easier to understand how each application has progressed over time
 
 The job applications page provides a comprehensive search, filtering, and sorting system.
 
-| Capability | Options |
-|---|---|
-| Search by | Job title, company, location |
-| Filter by | Application status, job type, work mode, salary range, applied date range, deadline status |
-| Deadline filter | Upcoming, overdue, no deadline |
-| Sort by | Job title, company, applied date, deadline, highest salary, lowest salary |
+| Capability      | Options                                                                                    |
+| --------------- | ------------------------------------------------------------------------------------------ |
+| Search by       | Job title, company, location                                                               |
+| Filter by       | Application status, job type, work mode, salary range, applied date range, deadline status |
+| Deadline filter | Upcoming, overdue, no deadline                                                             |
+| Sort by         | Job title, company, applied date, deadline, highest salary, lowest salary                  |
 
 Search, filtering, and sorting options can be combined to quickly find specific opportunities.
 
@@ -228,11 +255,11 @@ Search, filtering, and sorting options can be combined to quickly find specific 
 
 The dashboard provides an overview of the authenticated user's job application pipeline, including:
 
-- Total, saved, applied, interview, offer, rejected, and withdrawn applications
-- Application rate, interview rate, and offer rate
-- Recent applications
-- Upcoming deadlines
-- Monthly application activity
+* Total, saved, applied, interview, offer, rejected, and withdrawn applications
+* Application rate, interview rate, and offer rate
+* Recent applications
+* Upcoming deadlines
+* Monthly application activity
 
 All dashboard statistics are calculated from the current user's own applications.
 
@@ -256,7 +283,7 @@ The AI Job Analyzer uses **Google Gemini** to analyze job descriptions and gener
 
 The analyzer can also accept the user's current skills to provide a more candidate-focused skill match.
 
-AI-generated Markdown content is converted into formatted HTML using **Markdig**.
+AI-generated Markdown content is converted into formatted HTML using Markdig.
 
 ### AI Resume-to-Job Matching
 
@@ -264,19 +291,19 @@ The Resume Matcher lets users compare their resume with a saved job opportunity.
 
 The user provides:
 
-- Resume text
-- A saved job application containing a job description
+* Resume text
+* A saved job application containing a job description
 
 The AI evaluates the resume against the job description and returns:
 
-- **Match score**
-- Strong matches
-- Partial matches
-- Missing or weak skills
-- Matched keywords
-- Skill gaps
-- Preparation suggestions
-- Application recommendation
+* **Match score**
+* Strong matches
+* Partial matches
+* Missing or weak skills
+* Matched keywords
+* Skill gaps
+* Preparation suggestions
+* Application recommendation
 
 The matching process focuses on evidence explicitly present in the resume and requirements explicitly present in the job description.
 
@@ -284,26 +311,48 @@ The matching process focuses on evidence explicitly present in the resume and re
 
 ## Tech Stack
 
-| Category | Technology |
-|---|---|
-| Language | C# |
-| Framework | ASP.NET Core MVC |
-| Runtime | .NET 10 |
-| Authentication | ASP.NET Core Identity |
-| ORM | Entity Framework Core |
-| Database | SQL Server |
-| Data Access | Entity Framework Core, Code First |
-| Views | Razor Views |
-| Frontend | HTML, CSS, JavaScript, Bootstrap |
-| AI | Google Gemini |
-| Markdown Rendering | Markdig |
-| Version Control | Git & GitHub |
+| Category           | Technology                        |
+| ------------------ | --------------------------------- |
+| Language           | C#                                |
+| Framework          | ASP.NET Core MVC                  |
+| Runtime            | .NET 10                           |
+| Authentication     | ASP.NET Core Identity             |
+| ORM                | Entity Framework Core             |
+| Database           | SQL Server                        |
+| Data Access        | Entity Framework Core, Code First |
+| Views              | Razor Views                       |
+| Frontend           | HTML, CSS, JavaScript, Bootstrap  |
+| AI                 | Google Gemini                     |
+| Markdown Rendering | Markdig                           |
+| Version Control    | Git & GitHub                      |
 
 ---
 
 ## Architecture & Project Structure
 
 The project follows the **ASP.NET Core MVC** architecture with separate controllers, models, view models, data access, services, and Razor views.
+
+### Architecture Overview
+
+```text
+Browser
+   ↓
+Razor Views
+   ↓
+Controllers
+   ↓
+Services / Entity Framework Core
+   ↓
+SQL Server
+
+AI Controller
+   ↓
+GeminiService
+   ↓
+Google Gemini API
+```
+
+### Project Structure
 
 ```text
 AIJobTracker/
@@ -369,11 +418,11 @@ AIJobTracker uses **SQL Server** with **Entity Framework Core** following a **Co
 
 ### Main Entities
 
-| Entity | Description |
-|---|---|
-| `ApplicationUser` | Represents an authenticated application user |
-| `Job` | Represents an individual job application and stores company, status, salary, deadline, job description, and notes |
-| `JobStatusHistory` | Stores application status transitions and their timestamps |
+| Entity             | Description                                                                                                       |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------- |
+| `ApplicationUser`  | Represents an authenticated application user                                                                      |
+| `Job`              | Represents an individual job application and stores company, status, salary, deadline, job description, and notes |
+| `JobStatusHistory` | Stores application status transitions and their timestamps                                                        |
 
 ### Relationships
 
@@ -387,29 +436,18 @@ Entity Framework Core migrations are used to manage database schema changes.
 
 ---
 
-## CRUD Operations
-
-| Operation | Description |
-|---|---|
-| Create | Add a new job application |
-| Read | View personal applications and application details |
-| Update | Edit existing application information |
-| Delete | Remove an application with confirmation |
-
----
-
 ## Validation & Security
 
 The application includes several validation and security mechanisms:
 
-- ASP.NET Core Identity authentication
-- Authorization for protected routes
-- User-specific data access
-- Model validation using C# Data Annotations
-- Required-field, string length, URL, and salary range validation
-- Server-side and client-side validation
-- Anti-forgery validation on POST operations
-- Separation of application data by authenticated user
+* ASP.NET Core Identity authentication
+* Authorization for protected routes
+* User-specific data access
+* Model validation using C# Data Annotations
+* Required-field, string length, URL, and salary range validation
+* Server-side and client-side validation
+* Anti-forgery validation on POST operations
+* Separation of application data by authenticated user
 
 ### Security Note
 
@@ -419,17 +457,34 @@ For local development, sensitive configuration should be stored securely using m
 
 ---
 
+## AI Integration
+
+AIJobTracker integrates **Google Gemini** through a dedicated `GeminiService`.
+
+The service:
+
+* Sends structured prompts containing job descriptions and candidate information
+* Requests job analysis and resume-to-job matching
+* Processes the generated AI response
+* Supports candidate-focused skill matching
+* Produces structured recommendations and preparation suggestions
+* Renders Markdown-formatted AI results using **Markdig**
+
+The application keeps API credentials outside source control using secure local configuration.
+
+---
+
 ## Getting Started
 
 ### Prerequisites
 
 Make sure the following are installed:
 
-- [.NET 10 SDK](https://dotnet.microsoft.com/download)
-- Visual Studio 2022 or later, or another compatible .NET IDE
-- SQL Server or SQL Server LocalDB
-- Git
-- Entity Framework Core CLI tools
+* [.NET 10 SDK](https://dotnet.microsoft.com/download)
+* Visual Studio 2022 or later, or another compatible .NET IDE
+* SQL Server or SQL Server LocalDB
+* Git
+* Entity Framework Core CLI tools
 
 If the Entity Framework Core CLI tools are not installed:
 
@@ -489,34 +544,7 @@ Then open the local URL displayed in the terminal.
 dotnet build
 ```
 
-The project builds successfully with **0 errors**.
-
----
-
-## Learning Goals
-
-This project was developed as a practical learning and portfolio project to strengthen skills in:
-
-- C#
-- ASP.NET Core MVC
-- ASP.NET Core Identity
-- Entity Framework Core
-- SQL Server
-- MVC architecture
-- CRUD application development
-- Authentication and authorization
-- User-specific data handling
-- Model binding
-- Data validation
-- Razor Views
-- Bootstrap
-- JavaScript
-- Git and GitHub
-- AI API integration
-- Prompt engineering
-- Markdown rendering
-- AI-powered resume matching
-- Application analytics
+The project currently builds successfully with **0 errors**.
 
 ---
 
@@ -524,17 +552,17 @@ This project was developed as a practical learning and portfolio project to stre
 
 Potential future improvements include:
 
-- Password reset and email verification
-- Interview scheduling
-- Application reminders and notifications
-- Resume and document file attachments
-- Pagination for large application lists
-- REST API
-- Company information and research
-- Interview preparation assistant
-- AI-powered job recommendations
-- Cloud deployment
-- Production-ready deployment configuration
+* Password reset and email verification
+* Interview scheduling
+* Application reminders and notifications
+* Resume and document file attachments
+* Pagination for large application lists
+* REST API
+* Company information and research
+* Interview preparation assistant
+* AI-powered job recommendations
+* Cloud deployment
+* Production-ready deployment configuration
 
 ---
 
