@@ -68,13 +68,11 @@ The project was designed as a practical portfolio application to demonstrate rea
 
 ---
 
-## Demo Video
-
-A complete walkthrough of AIJobTracker covering authentication, job application management, dashboard analytics, AI job analysis, and AI-powered resume-to-job matching.
+## 🎥 Demo Video
 
 <p align="center">
   <a href="https://youtu.be/Z-YWoROj0PY">
-    <img src="screenshots/dashboard.png" width="80%" alt="Watch AIJobTracker Demo">
+    <img src="https://img.youtube.com/vi/Z-YWoROj0PY/maxresdefault.jpg" width="80%" alt="AIJobTracker Demo">
   </a>
 </p>
 
